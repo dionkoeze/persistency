@@ -50,3 +50,4 @@ We'll search for new numbers in a chain of persistency from small to large numbe
 ## Implementation
 
 #### Arbitrary precision numbers
+A number is stored as a vector of digits. All operations on the number are done on this vector. 

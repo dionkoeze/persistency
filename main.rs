@@ -50,8 +50,10 @@ impl Number {
   }
 
   fn is_div_by_7(&self) -> Option<bool> {
-    // 1 3 2 6 4 5
-    unimplemented!()
+    for digit in self.digits.iter().rev() {
+      println!("{}", digit);
+    }
+    None
   }
 
   fn div_by_2(&self) -> Number {
@@ -71,17 +73,20 @@ impl Number {
   }
 
   fn print(&self) {
-    println!("Dit is een number");
-    for digit in &self.digits {
-      println!("{}", digit);
+    let mut repr: String = "".to_string();
+
+    for digit in self.digits.iter() {
+      repr += &digit.to_string();
     }
+
+    println!("{}", repr);
   }
 }
 
 
 fn int_to_vec(num: i64, vec: &mut Vec<i16>) {
-  println!("----------");
-  println!("{}", num);
+  // println!("----------");
+  // println!("{}", num);
   if num != 0 {
     int_to_vec(num/10, vec);
     vec.push((num % 10) as i16);
@@ -90,10 +95,13 @@ fn int_to_vec(num: i64, vec: &mut Vec<i16>) {
 
 
 fn main() {
-  println!("hoi");
-
-  let num = Number::num_from_int(0);
+  let num = Number::num_from_int(123456);
 
   num.print();
+
+  println!("2 {}", num.is_div_by_2().unwrap());
+  println!("3 {}", num.is_div_by_3().unwrap());
+  println!("5 {}", num.is_div_by_5().unwrap());
+  println!("7 {}", num.is_div_by_7().unwrap());
 }
 
