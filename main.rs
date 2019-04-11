@@ -24,44 +24,44 @@ impl Number {
     }
   }
 
-  fn is_zero(&self) -> Option<bool> {
-    if let Some(0) = self.digits.first() {
-      if self.digits.len() == 1 {
-        Some(true)
-      } else {
-        Some(false)
-      }
-    } else {
-      None
+  fn is_zero(&self) -> bool {
+    match self.digits.first() {
+      Some(0) => true,
+      Some(_) => false,
+      None => panic!("No digits!")
     }
   }
 
-  fn is_div_by_2(&self) -> Option<bool> {
+  fn is_div_by_2(&self) -> bool {
     match self.digits.last() {
-      Some(val) => Some(val % 2 == 0),
-      None => None
+      Some(val) => val % 2 == 0,
+      None => panic!("No digits!")
     }
   }
 
-  fn is_div_by_3(&self) -> Option<bool> {
+  fn is_div_by_3(&self) -> bool {
+    if self.digits.len() == 0 {
+      panic!("No digits!");
+    }
+
     let mut sum = 0;
     for digit in &self.digits {
       sum += digit;
     }
 
-    Some(sum % 3 == 0)
+    sum % 3 == 0
   }
 
-  fn is_div_by_5(&self) -> Option<bool> {
+  fn is_div_by_5(&self) -> bool {
     match self.digits.last() {
-      Some(0) => Some(true),
-      Some(5) => Some(true),
-      Some(_) => Some(false),
-      None => None
+      Some(0) => true,
+      Some(5) => true,
+      Some(_) => false,
+      None => panic!("No digits!")
     }
   }
 
-  fn is_div_by_7(&self) -> Option<bool> {
+  fn is_div_by_7(&self) -> bool {
     let mut iter = self.digits.iter().rev();
     let mut check: i16 = 0;
     let mut flip: i16 = 1;
@@ -87,7 +87,7 @@ impl Number {
       flip *= -1;
     }
 
-    Some(check % 7 == 0)
+    check % 7 == 0
   }
 
   fn div_by(&self, n: i16) -> Self {
@@ -163,48 +163,58 @@ impl PrimeFactorization {
   }
 
   fn from_num(num: Number) -> Self {
-    let pf = PrimeFactorization::new();
+    let mut pf = PrimeFactorization::new();
 
-    find_factorization(num, pf);
+    find_factorization(num, &mut pf);
 
     pf
   }
 
   fn add(&mut self, prime: i16) {
-    primes.push(prime);
+    self.primes.push(prime);
+  }
+
+  fn print(&self) {
+    for prime in &self.primes {
+      println!("{}", prime);
+    }
   }
 }
 
 
-fn find_factorization(num: Number, pf: &mut PrimeFactorization) {
-  if let Some(b) = num.is_div_by_2() {
+fn find_factorization(num: Number, mut pf: &mut PrimeFactorization) {
+  if num.is_div_by_2() {
     pf.add(2);
-    find_factorization(num.div_by_2(), pf);
+    find_factorization(num.div_by_2(), &mut pf);
   } else if num.is_div_by_3() {
     pf.add(3);
+    find_factorization(num.div_by_3(), &mut pf);
   } else if num.is_div_by_5() {
     pf.add(5);
+    find_factorization(num.div_by_5(), &mut pf);
   } else if num.is_div_by_7() {
     pf.add(7);
+    find_factorization(num.div_by_7(), &mut pf);
   }
 }
 
 
 fn main() {
-  let num = Number::num_from_int(6976984);
+  let num = Number::num_from_int(338688);
 
   num.print();
 
-  println!("2 {}", num.is_div_by_2().unwrap());
-  println!("3 {}", num.is_div_by_3().unwrap());
-  println!("5 {}", num.is_div_by_5().unwrap());
-  println!("7 {}", num.is_div_by_7().unwrap());
+  println!("2 {}", num.is_div_by_2());
+  println!("3 {}", num.is_div_by_3());
+  println!("5 {}", num.is_div_by_5());
+  println!("7 {}", num.is_div_by_7());
 
   num.div_by_2().print();
   num.div_by_3().print();
   num.div_by_5().print();
   num.div_by_7().print();
 
-  
+  let pf = PrimeFactorization::from_num(num);
+  pf.print();
 }
 
